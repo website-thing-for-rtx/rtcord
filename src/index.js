@@ -49,7 +49,8 @@ await db.exec(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     message TEXT NOT NULL,
     serverId INTEGER,
-    userId INTEGER
+    userId INTEGER,
+    channelId INTEGER
   )
 `);
 
@@ -57,6 +58,7 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
+app.set('view engine', 'pug')
 
 app.post('/api/signup', async (req, res) => {
     const { login, pass } = req.body;
@@ -151,6 +153,10 @@ app.post('/api/sendMessage', requireAuth, async (req, res) => {
     });
 
     res.status(200).send('shi');
+})
+
+app.get('/:serverId/:channelId', (req, res) => {
+
 })
 
 server.listen(port, () => {
