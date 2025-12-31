@@ -21,10 +21,13 @@ function renderMessage(msg) {
   name.className = 'name';
   name.textContent = userMap[msg.userId];
   
+  if (userMap[msg.userId] == null || userMap[msg.userId] == "")
+    fetch('/api/user/' + msg.userId)
+    .then(x => name.textContent = x)
 
   messageDiv.appendChild(avatar);
-  messageDiv.appendChild(text);
   messageDiv.appendChild(name);
+  messageDiv.appendChild(text);
 
   return messageDiv;
 }
@@ -46,6 +49,8 @@ ws.onopen = () => {
 ws.onmessage = (event) => {
   console.log('WS message:', event.data);
   const msg = JSON.parse(event.data);
+  if (msg.channelId != channelId)
+    return;
   container.appendChild(renderMessage(msg));
 };
 

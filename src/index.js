@@ -215,7 +215,7 @@ app.post('/api/sendMessage', requireAuth, async (req, res) => {
     res.status(200).send('shi');
 })
 
-app.post('/api/login/:userId', async (req, res) => {
+app.get('/api/user/:userId', async (req, res) => {
   return res.status(200).send(getUserName(req.params.userId));
 })
 
