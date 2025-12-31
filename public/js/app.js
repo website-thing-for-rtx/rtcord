@@ -30,7 +30,7 @@ function broadcast(userId, message, serverId, channelId) {
 }
 
 buttonSend.addEventListener('click', () => {
-    broadcast(1, messageInput.value, 1, 1);
+    broadcast(userId, messageInput.value, serverId, channelId);
 });
 
 ws.onopen = () => {

@@ -12,10 +12,15 @@ html
   body
     div
         div.msgs
-            each message in messages
-              +message(message)
+            if messages && messages.length
+              each message in messages
+                +message(message)
         div
             input.messageInput(type="text", name="")
             button.sendMsg Send Message
+    script.
+      const serverId = !{JSON.stringify(serverId)};
+      const channelId = !{JSON.stringify(channelId)};
+      const userId = !{JSON.stringify(userId)};
     script(src="/js/app.js")
             

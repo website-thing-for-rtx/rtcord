@@ -2,6 +2,7 @@ import { db } from './database/index.js'
 import { signup, login, isAdmin, getUserId } from './database/users.js'
 import { noteMessage } from './database/ws.js'
 import { getAllMessagesFrom } from './database/messages.js';
+import { getServersUserIsIn, isUserIn, addUserToServer } from './database/servers.js'
 import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
@@ -58,6 +59,23 @@ await db.exec(`
     channelId INTEGER
   )
 `);
+
+await db.exec(`
+  CREATE TABLE IF NOT EXISTS servers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    ownerId INTEGER NOT NULL
+  )
+`);
+
+await db.exec(`
+  CREATE TABLE IF NOT EXISTS servers_users (
+    serverId INTEGER NOT NULL,
+    userId INTEGER NOT NULL,
+    PRIMARY KEY (serverId, userId)
+  )
+`);
+
 
 await sendDiscordWebhook({
       content: '<@&1455969806132973744>',
@@ -193,9 +211,15 @@ app.get('/chat/:serverId/:channelId', requireAuth, async (req, res) => {
     Array.isArray(messages)
   );
 
+  if (!isUserIn(req.params.serverId, getUserId(req.session.user.login))) {
+    return res.status(401).send("Unauthorized, ur prob not in seber");
+  }
 
   res.render('chat', {
-    messages: messages
+    messages: messages,
+    serverId: req.params.serverId,
+    channelId: req.params.channelId,
+    userId: getUserId(req.session.user.login)
   });
 })
 
