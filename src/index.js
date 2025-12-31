@@ -120,6 +120,9 @@ app.post('/api/login', async (req, res) => {
         req.session.user = {
             login: loginuser
         };
+        if (isBrowser(req)) {
+          return res.redirect('/');
+        }
         res.status(200).send({ message: 'User logged in successfully' });
     }
     else
@@ -264,6 +267,11 @@ process.on('SIGINT', async () => {
   }
   process.exit(0);
 });
+
+function isBrowser(req) {
+  const ua = req.headers['user-agent'] || '';
+  return /Mozilla|Chrome|Safari|Firefox|Edge/i.test(ua);
+}
 
 server.listen(port, () => {
   console.log('RtCord seber softwar')
