@@ -9,12 +9,13 @@ mixin message(msg)
 html
   head
     title My Page
-    script(src="/js/app.js")
   body
     div
-        div
+        div.msgs
             each message in messages
               +message(message)
             div
-              button.sendMsg Login
+              input.messageInput(type="text", name="")
+              button.sendMsg Send Message
+    script(src="/js/app.js")
             

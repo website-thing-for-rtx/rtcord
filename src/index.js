@@ -13,16 +13,17 @@ import http from 'http';
 import cookie from 'cookie';
 import { parse } from 'cookie';
 import { channel } from 'diagnostics_channel';
+import signature from 'cookie-signature';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express()
 const server = http.createServer(app);
-const wss = new WebSocketServer({ server });
+const wss = new WebSocketServer({ noServer: true });
 dotenv.config();
 
-app.use(session({
+const sessionParser = session({
   name: 'rtcord.sid',
   secret: process.env.SESSION_SECRET || 'dev-secret',
   resave: false,
@@ -32,7 +33,9 @@ app.use(session({
     sameSite: 'lax',
     secure: false
   }
-}));
+})
+
+app.use(sessionParser);
 
 let port = process.env.PORT
 if (port == null)
@@ -55,6 +58,18 @@ await db.exec(`
     channelId INTEGER
   )
 `);
+
+await sendDiscordWebhook({
+      content: '<@&1455969806132973744>',
+        embeds: [
+          {
+            title: 'power on',
+            description: 'rtcord is on',
+            color: 0x00ff00,
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      });
 
 app.use(bodyParser.json());
 app.use(express.json());
@@ -102,41 +117,43 @@ app.get('/admin', requireAuth, async (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'admin.html'))
 });
 
-wss.on('connection', (ws, req) => {
-  const cookies = cookie.parse(req.headers.cookie || '');
-  const sessionID = cookies['rtcord.sid'];
-
-  console.log('Raw session cookie:', sessionID);
-
-  sessionParser.store.get(sessionID, (err, sessionData) => {
-    if (err || !sessionData || !sessionData.user) {
-      ws.close();
+server.on('upgrade', (req, socket, head) => {
+  sessionParser(req, {}, () => {
+    if (!req.session?.user) {
+      socket.destroy();
       return;
     }
 
-    console.log('Authorized WS user:', sessionData.user.login);
+    wss.handleUpgrade(req, socket, head, (ws) => {
+      ws.user = req.session.user;
 
-    ws.user = sessionData.user;
-
-    ws.on('message', (message) => {
-        console.log('Received:', message.toString());
-
-        const data = JSON.parse(message.toString());
-        console.log('Received JSON:', data);
-
-        //const reply = JSON.stringify({ echo: data });
-
-        noteMessage(data.message, data.serverId, data.userId);
-
-        /*wss.clients.forEach((client) => {
-            if (client.readyState === ws.OPEN) client.send(reply);
-        });*/
+      wss.emit('connection', ws, req);
     });
+  });
+});
 
-    ws.on('close', () => {
-        console.log('Client disconnected');
-    });
-  })
+wss.on('connection', (ws, req) => {
+  //console.log('Authorized WS user:', ws.user.login);
+
+  ws.on('message', (message) => {
+      console.log('Received:', message.toString());
+
+      const data = JSON.parse(message.toString());
+      console.log('Received JSON:', data);
+
+      //const reply = JSON.stringify({ echo: data });
+
+      noteMessage(data.message, data.serverId, data.userId);
+
+      /*wss.clients.forEach((client) => {
+          if (client.readyState === ws.OPEN) client.send(reply);
+      });*/
+
+  });
+
+  ws.on('close', () => {
+      console.log('Client disconnected');
+  });
 });
 
 //const ws = new WebSocket('ws://localhost:7777');
@@ -175,6 +192,40 @@ app.get('/chat/:serverId/:channelId', async (req, res) => {
     messages: messages
   });
 })
+
+async function sendDiscordWebhook({ content, embeds }) {
+  const url = process.env.WEBHOOK;
+  
+  const body = {};
+  if (content) body.content = content;
+  if (embeds) body.embeds = embeds;
+
+  await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+}
+
+process.on('SIGINT', async () => {
+  console.log('by');
+  try {
+    await sendDiscordWebhook({
+      content: '<@&1455969806132973744>',
+        embeds: [
+          {
+            title: 'shutdown',
+            description: 'rtcord shutting down',
+            color: 0xff0000,
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      });
+  } catch (err) {
+    console.error('it no worked', err);
+  }
+  process.exit(0);
+});
 
 server.listen(port, () => {
   console.log('RtCord seber softwar')
