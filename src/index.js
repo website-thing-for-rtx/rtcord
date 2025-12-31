@@ -1,6 +1,7 @@
 import { db } from './database/index.js'
 import { signup, login, isAdmin, getUserId } from './database/users.js'
 import { noteMessage } from './database/ws.js'
+import { getAllMessagesFrom } from './database/messages.js';
 import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
@@ -11,6 +12,7 @@ import { WebSocketServer } from 'ws';
 import http from 'http';
 import cookie from 'cookie';
 import { parse } from 'cookie';
+import { channel } from 'diagnostics_channel';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -59,6 +61,7 @@ app.use(express.json());
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'pug')
+app.set('views', path.join(__dirname, '..', 'public', 'views'));
 
 app.post('/api/signup', async (req, res) => {
     const { login, pass } = req.body;
@@ -155,8 +158,22 @@ app.post('/api/sendMessage', requireAuth, async (req, res) => {
     res.status(200).send('shi');
 })
 
-app.get('/:serverId/:channelId', (req, res) => {
+app.get('/chat/:serverId/:channelId', async (req, res) => {
+  const messages = await getAllMessagesFrom(req.params.serverId, req.params.channelId);
+  
+  console.log(
+    'messages:',
+    messages,
+    'type:',
+    typeof messages,
+    'isArray:',
+    Array.isArray(messages)
+  );
 
+
+  res.render('chat', {
+    messages: messages
+  });
 })
 
 server.listen(port, () => {

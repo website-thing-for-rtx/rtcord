@@ -1,0 +1,20 @@
+mixin message(msg)
+  .message(
+    data-userid=msg.userId
+    data-messageid=msg.id
+  )
+    img.avatar(src=`/avatars/${msg.userId}.png`)
+    p.text= msg.message
+
+html
+  head
+    title My Page
+    script(src="/js/app.js")
+  body
+    div
+        div
+            each message in messages
+              +message(message)
+            div
+              button.sendMsg Login
+            
