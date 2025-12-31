@@ -76,6 +76,14 @@ await db.exec(`
   )
 `);
 
+await db.exec(`
+  CREATE TABLE IF NOT EXISTS channels (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    serverId INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    type TEXT DEFAULT 'text'
+  )
+`);
 
 await sendDiscordWebhook({
       content: '<@&1455969806132973744>',
