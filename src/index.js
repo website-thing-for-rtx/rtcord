@@ -143,7 +143,13 @@ wss.on('connection', (ws, req) => {
 
       //const reply = JSON.stringify({ echo: data });
 
-      noteMessage(data.message, data.serverId, data.userId);
+      noteMessage(data.message, data.serverId, data.userId, data.channelId);
+
+      wss.clients.forEach(client => {
+        if (client.readyState === client.OPEN) {
+          client.send(JSON.stringify(data));
+        }
+      });
 
       /*wss.clients.forEach((client) => {
           if (client.readyState === ws.OPEN) client.send(reply);
@@ -175,7 +181,7 @@ app.post('/api/sendMessage', requireAuth, async (req, res) => {
     res.status(200).send('shi');
 })
 
-app.get('/chat/:serverId/:channelId', async (req, res) => {
+app.get('/chat/:serverId/:channelId', requireAuth, async (req, res) => {
   const messages = await getAllMessagesFrom(req.params.serverId, req.params.channelId);
   
   console.log(

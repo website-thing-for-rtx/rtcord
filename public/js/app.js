@@ -23,14 +23,14 @@ function renderMessage(msg) {
   return messageDiv;
 }
 
-function broadcast(userId, message, serverId) {
-  const msg = JSON.stringify({ userId, serverId, message });
+function broadcast(userId, message, serverId, channelId) {
+  const msg = JSON.stringify({ userId, serverId, message, channelId });
 
   ws.send(msg);
 }
 
 buttonSend.addEventListener('click', () => {
-    broadcast(1, messageInput.value, 1);
+    broadcast(1, messageInput.value, 1, 1);
 });
 
 ws.onopen = () => {
