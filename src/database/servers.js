@@ -20,6 +20,13 @@ export async function getServersUserIsIn(userId) {
   );
 }
 
+export async function getServerInfo(serverId) {
+    return await db.all(
+        'SELECT * FROM servers WHERE id = ?',
+        serverId
+    )
+}
+
 export async function createChannel(serverId, name) {
   return await db.run(
     'INSERT INTO channels (serverId, name) VALUES (?, ?)',

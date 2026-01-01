@@ -2,7 +2,7 @@ import { db } from './database/index.js'
 import { signup, login, isAdmin, getUserId, getUserName } from './database/users.js'
 import { noteMessage } from './database/ws.js'
 import { getAllMessagesFrom } from './database/messages.js';
-import { getServersUserIsIn, isUserIn, addUserToServer, getChannels } from './database/servers.js'
+import { getServersUserIsIn, isUserIn, addUserToServer, getChannels, getServerInfo } from './database/servers.js'
 import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
@@ -236,6 +236,19 @@ app.post('/api/sendMessage', requireAuth, async (req, res) => {
 
 app.get('/api/user/:userId', async (req, res) => {
   return res.status(200).send(getUserName(req.params.userId));
+})
+
+app.get('/api/users/servers', requireAuth, async (req, res) => {
+  const servers = await getServersUserIsIn(await getUserId(req.session.user.login));
+  
+  const serverDetails = await Promise.all(
+    servers.map(async (server) => {
+      const info = await getServerInfo(server.serverId);
+      return info;
+    })
+  );
+
+  res.status(200).json(serverDetails);
 })
 
 app.get('/chat/:serverId/:channelId', requireAuth, async (req, res) => {
