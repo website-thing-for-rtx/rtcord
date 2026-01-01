@@ -3,7 +3,7 @@ mixin message(msg)
     data-userid=msg.userId
     data-messageid=msg.id
   )
-    img.avatar(src=`/avatars/${msg.userId}.png`)
+    img.avatar(src=`/avatars/${msg.userId}.png`, width="120", height="120")
     p.name= userMap[msg.userId]
     p.text= msg.message
 

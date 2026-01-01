@@ -1,0 +1,16 @@
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title Rtcord
+    body 
+        div 
+            div.avatar
+                img(src=`/avatars/${userId}.png`, alt="", width="120", height="120")
+                if isModifiableUser
+                    form(action=`/api/profile/${userId}/avatar/upload` method="post" enctype="multipart/form-data")
+                        input(type="file" name="avatar")
+                        button(type="submit") Upload
+
+
+        script(src="/js/profile.js") 

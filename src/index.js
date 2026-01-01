@@ -15,6 +15,8 @@ import cookie from 'cookie';
 import { parse } from 'cookie';
 import { channel } from 'diagnostics_channel';
 import signature from 'cookie-signature';
+import multer from 'multer'
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,6 +25,9 @@ const app = express()
 const server = http.createServer(app);
 const wss = new WebSocketServer({ noServer: true });
 dotenv.config();
+
+const avatarUpload = multer()
+const upload = multer({ dest: 'public/avatars/' })
 
 const sessionParser = session({
   name: 'rtcord.sid',
@@ -253,6 +258,43 @@ app.get('/chat/:serverId/:channelId', requireAuth, async (req, res) => {
     channels,
     userMap
   });
+})
+
+app.get('/profile/:userId', requireAuth, async (req, res) => {
+  let isModifiableUser = true;
+  if (await getUserId(req.session.user.login) != req.params.userId) {
+    isModifiableUser = false;
+  }
+  
+  res.render('profile', {
+    userId: req.params.userId,
+    isModifiableUser
+  });
+})
+
+app.get('/profile/', requireAuth, async (req, res) => {
+  res.status(301).redirect(`/profile/${await getUserId(req.session.user.login)}`);
+})
+
+app.post('/api/profile/:userId/avatar/upload', requireAuth, upload.single('avatar'), async (req, res) => {
+  const file = req.file;
+  //const { userId } = req.body;
+  
+  if (await getUserId(req.session.user.login) != req.params.userId)
+    return res.status(403).send("Unauthorized")
+
+  const fs = await import('fs/promises');
+  const path = await import('path');
+
+  const ext = path.extname(file.originalname);
+  const newPath = path.join(
+    file.destination,
+    `${await getUserId(req.session.user.login)}${ext}`
+  );
+
+  await fs.rename(file.path, newPath);
+
+  res.status(300).send("avatar changed")
 })
 
 async function sendDiscordWebhook({ content, embeds }) {
