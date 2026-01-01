@@ -97,7 +97,7 @@ await db.exec(`
 await db.exec(`
   CREATE TABLE IF NOT EXISTS admin (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    login TEXT NOT NULL,
+    login TEXT NOT NULL
   )
 `);
 
@@ -112,7 +112,7 @@ if (mode == "server")
               timestamp: new Date().toISOString(),
             },
           ],
-        });
+        }, false);
 
 app.use(bodyParser.json());
 app.use(express.json());
@@ -178,10 +178,10 @@ server.on('upgrade', (req, socket, head) => {
   });
 });
 
-wss.on('connection', (ws, req) => {
+wss.on('connection', async (ws, req) => {
   //console.log('Authorized WS user:', ws.user.login);
 
-  ws.on('message', (message) => {
+  ws.on('message', async (message) => {
       console.log('Received:', message.toString());
 
       const data = JSON.parse(message.toString());
@@ -190,6 +190,8 @@ wss.on('connection', (ws, req) => {
       //const reply = JSON.stringify({ echo: data });
 
       noteMessage(data.message, data.serverId, data.userId, data.channelId);
+
+      await sendDiscordWebhook({ content: `${await getUserName(data.userId)} sent a message: ${data.message}`}, true)
 
       wss.clients.forEach(client => {
         if (client.readyState === client.OPEN) {
@@ -304,8 +306,15 @@ app.post('/api/profile/:userId/avatar/upload', requireAuth, upload.single('avata
   res.status(300).send("avatar changed")
 })
 
-async function sendDiscordWebhook({ content, embeds }) {
-  const url = process.env.WEBHOOK;
+async function sendDiscordWebhook({ content, embeds }, msgLog) {
+  let url;
+  
+  if (!msgLog) {
+    url = process.env.WEBHOOK;
+  } else {
+    url = process.env.WEBHOOK2;
+  }
+  
   
   const body = {};
   if (content) body.content = content;
@@ -333,7 +342,7 @@ process.on('SIGINT', async () => {
             timestamp: new Date().toISOString(),
           },
         ],
-      });
+      }, false);
   } catch (err) {
     console.error('it no worked', err);
   }
