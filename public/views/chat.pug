@@ -2,10 +2,11 @@ mixin message(msg)
   .message(
     data-userid=msg.userId
     data-messageid=msg.id
+    data-message=msg.message
   )
     img.avatar(src=`/avatars/${msg.userId}.png`, width="120", height="120")
     p.name= userMap[msg.userId]
-    p.text= msg.message
+    p.text(data-message=`${JSON.stringify(msg.message)}`)= msg.message
 
 mixin channel(channel)
   .channel(
@@ -13,7 +14,7 @@ mixin channel(channel)
     data-name=channel.name
   )
     //img.avatar(src=`/avatars/${msg.userId}.png`)
-    a(href=`http://rtcord.rtx3080ti0415.qzz.io:32768/chat/1/${channel.id}`).text= channel.name
+    a(href=`http://rtcord.rtx3080ti0415.qzz.io:32768/chat/1/${channel.id}`).channel= channel.name
 
 html
   head
