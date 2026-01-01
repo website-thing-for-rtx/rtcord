@@ -12,6 +12,8 @@ sqlite3
 bcrypt
 websocket
 pug
+dotenv
+express
 
 ## license
 gpl-3.0 th best if no wtfpl
