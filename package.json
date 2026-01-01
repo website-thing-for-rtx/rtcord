@@ -4,7 +4,7 @@
   "description": "Discord if it was made by RTX3080Ti...",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest"
   },
   "keywords": [
     "discord"
@@ -20,5 +20,12 @@
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
     "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.5",
+    "@babel/preset-env": "^7.28.5",
+    "babel-jest": "^30.2.0",
+    "cross-env": "^10.1.0",
+    "vitest": "^4.0.16"
   }
 }
