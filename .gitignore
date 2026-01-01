@@ -5,3 +5,4 @@ node_modules/
 coverage/
 public/avatars/
 public/emojis/
+cert/

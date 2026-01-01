@@ -16,6 +16,7 @@ import { parse } from 'cookie';
 import { channel } from 'diagnostics_channel';
 import signature from 'cookie-signature';
 import multer from 'multer'
+import fs from 'fs'
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -120,6 +121,10 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'pug')
 app.set('views', path.join(__dirname, '..', 'public', 'views'));
+
+const options = {
+  port
+};
 
 app.post('/api/signup', async (req, res) => {
     const { login, pass } = req.body;
@@ -354,7 +359,7 @@ function isBrowser(req) {
   return /Mozilla|Chrome|Safari|Firefox|Edge/i.test(ua);
 }
 
-server.listen(port, () => {
+server.listen(options, port, () => {
   console.log('RtCord seber softwar')
   console.log('copyrigh -69 me inc')
   console.log(`RtCord and websocket listening on port ${port}`)
