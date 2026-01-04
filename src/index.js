@@ -200,10 +200,10 @@ wss.on('connection', async (ws, req) => {
   //console.log('Authorized WS user:', ws.user.login);
 
   ws.on('message', async (message) => {
-      console.log('Received:', message.toString());
+      //console.log('Received:', message.toString());
 
       const data = JSON.parse(message.toString());
-      console.log('Received JSON:', data);
+      //console.log('Received JSON:', data);
 
       //const reply = JSON.stringify({ echo: data });
 
