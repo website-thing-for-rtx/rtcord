@@ -42,6 +42,19 @@ const sessionParser = session({
   }
 })
 
+const asciiArt = `
+ ________  _________  ________  ________  ________  ________     
+|\\   __  \\|\\___   ___\\\\   ____\\|\\   __  \\|\\   __  \\|\\   ___ \\    
+\\ \\  \\|\\  \\|___ \\  \\_\\ \\  \\___|\\ \\  \\|\\  \\ \\  \\|\\  \\ \\  \\_|\\ \\   
+ \\ \\   _  _\\   \\ \\  \\ \\ \\  \\    \\ \\  \\\\\\  \\ \\   _  _\\ \\  \\ \\\\ \\  
+  \\ \\  \\\\  \\|   \\ \\  \\ \\ \\  \\____\\ \\  \\\\\\  \\ \\  \\\\  \\\\ \\  \\_\\\\ \\ 
+   \\ \\__\\\\ _\\    \\ \\__\\ \\ \\_______\\ \\_______\\ \\__\\\\ _\\\\ \\_______\\
+    \\|__|\\|__|    \\|__|  \\|_______|\\|_______|\\|__|\\|__|\\|_______|
+`;
+
+const yellow = "\x1b[33m";
+const reset = "\x1b[0m";
+
 app.use(sessionParser);
 
 let port = process.env.PORT
@@ -408,5 +421,8 @@ server.listen(options, port, () => {
   console.log('RtCord seber softwar')
   console.log('copyrigh -69 me inc')
   console.log('POWERED BY BOTER DOG')
+  console.log('')
+  console.log('')
+  console.log(yellow + asciiArt + reset)
   console.log(`RtCord and websocket listening on port ${port}`)
 })

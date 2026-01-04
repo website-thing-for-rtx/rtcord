@@ -12,6 +12,8 @@ html(lang="en")
                     form(action=`/api/profile/${userId}/avatar/upload` method="post" enctype="multipart/form-data")
                         input(type="file" name="avatar")
                         button(type="submit") Upload
+                    div.bio
+                        span.bioText
 
 
         script(src="/js/profile.js") 
