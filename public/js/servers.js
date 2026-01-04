@@ -1,4 +1,5 @@
 const ul = document.querySelector(".server-list");
+const servers = document.querySelector(".servers");
 
 function makeServerElement(server) {
     const li = document.createElement("li");
@@ -21,8 +22,16 @@ function makeServerElement(server) {
 }
 
 fetch('/api/users/servers')
-.then(x => x.json())
+.then(x => x.text())
 .then(data => {
+    console.log(data);
+    if (data !== 'Not logged in') {
+        
+    } else {
+        servers.innerHTML = "";
+        return;
+    }
+    data = JSON.parse(data);
     data.forEach(server => {
         ul.appendChild(makeServerElement(server));
         console.log(server);
