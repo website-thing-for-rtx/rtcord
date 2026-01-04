@@ -24,5 +24,8 @@ jobs:
       - name: Install dependencies
         run: npm i
 
+      - name: Init
+        run: node . true
+
       - name: Run Vitest
         run: npm test

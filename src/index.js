@@ -55,6 +55,8 @@ const asciiArt = `
 const yellow = "\x1b[33m";
 const reset = "\x1b[0m";
 
+const isCi = process.argv[2] || "false";
+
 app.use(sessionParser);
 
 let port = process.env.PORT
@@ -425,4 +427,6 @@ server.listen(options, port, () => {
   console.log('')
   console.log(yellow + asciiArt + reset)
   console.log(`RtCord and websocket listening on port ${port}`)
+  if (isCi == "true")
+    process.exit(0)
 })
