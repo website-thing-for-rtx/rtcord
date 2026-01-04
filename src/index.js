@@ -309,14 +309,14 @@ app.get('/chat/:serverId/:channelId', requireAuth, async (req, res) => {
   );
   const userMap = Object.fromEntries(users.map(u => [u.id, u.login]));
 
-  console.log(
+  /*console.log(
     'messages:',
     messages,
     'type:',
     typeof messages,
     'isArray:',
     Array.isArray(messages)
-  );
+  );*/
 
   if (!isUserIn(req.params.serverId, getUserId(req.session.user.login))) {
     return res.status(401).send("Unauthorized, ur prob not in seber");
