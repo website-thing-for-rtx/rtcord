@@ -4,7 +4,10 @@ mixin message(msg)
     data-messageid=msg.id
     data-message=msg.message
   )
-    img.avatar(src=`/avatars/${msg.userId}.png`, width="120", height="120")
+    picture
+      source(srcset=`/avatars/${userId}.jpg` type="image/jpeg")
+      source(srcset=`/avatars/${userId}.png` type="image/png")
+      img(src=`/avatars/${userId}.jpg` alt="Avatar" width="120" height="120")
     p.name= userMap[msg.userId]
     p.text(data-message=`${JSON.stringify(msg.message)}`)= msg.message
 

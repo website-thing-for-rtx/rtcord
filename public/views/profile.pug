@@ -7,7 +7,10 @@ html(lang="en")
     body 
         div 
             div.avatar
-                img(src=`/avatars/${userId}.png`, alt="", width="120", height="120")
+                picture
+                    source(srcset=`/avatars/${userId}.webp` type="image/jpeg")
+                    source(srcset=`/avatars/${userId}.png` type="image/png")
+                    img(src=`/avatars/${userId}.jpg` alt="Avatar" width="120" height="120")
                 if isModifiableUser
                     form(action=`/api/profile/${userId}/avatar/upload` method="post" enctype="multipart/form-data")
                         input(type="file" name="avatar")
