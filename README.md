@@ -18,5 +18,5 @@ npm install and node . 🤯
 ## license
 gpl-3.0 th best if no wtfpl
 
-COPYRIGHT -69 me inc
+COPYRIGHT -69 me inc \
 COPYRIGHT 1932 BOTER DOG ENTERPRISES, INC.
