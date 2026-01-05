@@ -74,3 +74,11 @@ export async function createServer(ownerId, name) {
 
   return serverId;
 }
+
+export async function renameServer(serverId, newName) {
+  const result = await db.run(
+    'UPDATE servers SET name = ? WHERE id = ?', newName, serverId
+  )
+
+  return !!result;
+}

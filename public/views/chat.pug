@@ -4,13 +4,7 @@ mixin message(msg)
     data-messageid=msg.id
     data-message=msg.message
   )
-    img(
-      src=`/avatars/${userId}.jpg` 
-      onerror="this.onerror=null; this.src='/avatars/3.png';" 
-      alt="Avatar" 
-      width="120" 
-      height="120"
-    )
+    include include/avatar.pug
     p.name= userMap[msg.userId]
     p.text(data-message=`${JSON.stringify(msg.message)}`)= msg.message
 

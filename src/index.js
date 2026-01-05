@@ -2,7 +2,7 @@ import { db } from './database/index.js'
 import { signup, login, isAdmin, getUserId, getUserName } from './database/users.js'
 import { noteMessage } from './database/ws.js'
 import { getAllMessagesFrom } from './database/messages.js';
-import { getServersUserIsIn, isUserIn, addUserToServer, getChannels, getServerInfo } from './database/servers.js'
+import { getServersUserIsIn, isUserIn, addUserToServer, getChannels, getServerInfo, renameServer } from './database/servers.js'
 import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
@@ -176,6 +176,20 @@ function requireAuth(req, res, next) {
   }
   next();
 }
+
+app.post('/api/servers/rename', requireAuth, async (req, res) => {
+  const { serverName, serverId } = req.body;
+  
+  if (!(await isAdmin(req.session.user.login))) {
+    return res.status(403).send('Unauthorized');
+  }
+
+  if (await renameServer(serverId, serverName)) {
+    return res.status(200).send("done");
+  } else {
+    return res.status(500).send("skill issue");
+  }
+})
 
 app.get('/admin', requireAuth, async (req, res) => {
   //res.json(req.session.user);

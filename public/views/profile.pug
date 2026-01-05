@@ -7,13 +7,7 @@ html(lang="en")
     body 
         div 
             div.avatar
-                img(
-                  src=`/avatars/${userId}.jpg` 
-                  onerror="this.onerror=null; this.src='/avatars/3.png';" 
-                  alt="Avatar" 
-                  width="120" 
-                  height="120"
-                )
+                include include/avatar.pug
                 if isModifiableUser
                     form(action=`/api/profile/${userId}/avatar/upload` method="post" enctype="multipart/form-data")
                         input(type="file" name="avatar")
