@@ -141,6 +141,10 @@ const options = {
   port
 };
 
+app.use('/avatars', (req, res) => {
+    res.status(404).end();
+});
+
 app.post('/api/signup', async (req, res) => {
     const { login, pass } = req.body;
 
