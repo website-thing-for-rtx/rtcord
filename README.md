@@ -1,4 +1,7 @@
 # rtcord
+
+[![thin](https://img.shields.io/badge/Self_hosted-Gitea-green?logo=gitea)](https://git.rtx3080ti0415.qzz.io/me_inc/rtcord)
+
 idfk wat to put here
 
 ## how to

@@ -1,4 +1,4 @@
-const ws = new WebSocket('ws://rtcord.rtx3080ti0415.qzz.io:32768');
+const ws = new WebSocket('wss://rtcord.rtx3080ti0415.qzz.io');
 const container = document.querySelector(".msgs");
 const messageInput = document.querySelector(".messageInput");
 const buttonSend = document.querySelector(".sendMsg");
@@ -14,6 +14,7 @@ function renderMessage(msg) {
   avatar.src = `/avatars/${msg.userId}.png`;
   avatar.width = 120;
   avatar.height = 120;
+  avatar.onerror=`this.onerror=null; this.src='/avatars/${msg.userId}.png';`;
 
   const text = document.createElement('p');
   text.className = 'text';

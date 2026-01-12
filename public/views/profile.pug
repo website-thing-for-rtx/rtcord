@@ -7,7 +7,7 @@ html(lang="en")
     body 
         div 
             div.avatar
-                include include/avatar.pug
+                include ../include/avatar.pug
                 if isModifiableUser
                     form(action=`/api/profile/${userId}/avatar/upload` method="post" enctype="multipart/form-data")
                         input(type="file" name="avatar")

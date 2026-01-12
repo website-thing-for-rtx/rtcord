@@ -444,6 +444,9 @@ server.listen(options, port, () => {
   console.log('')
   console.log('')
   console.log(yellow + asciiArt + reset)
+  console.log('')
+  if (mode = "dev")
+    console.log(yellow + "[WARN]" + reset + " dis is runnin in DEV mode if dis aint intentional pleb change to seber mod in .env");
   console.log(`RtCord and websocket listening on port ${port}`)
   if (isCi == "true")
     process.exit(0)
